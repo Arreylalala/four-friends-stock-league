@@ -1,5 +1,42 @@
 {
   "returnsEnabled": false,
   "returnsStartDate": null,
-  "days": []
+  "days": [
+    {
+      "date": "2026-09-01",
+      "amounts": {
+        "lun": -3584.2,
+        "lei": -9197.2,
+        "jian": 40,
+        "chao": -383
+      }
+    },
+    {
+      "date": "2026-09-02",
+      "amounts": {
+        "lun": -2200,
+        "lei": -10366.21,
+        "jian": -182,
+        "chao": -782.5
+      }
+    },
+    {
+      "date": "2026-09-03",
+      "amounts": {
+        "lun": -1000,
+        "lei": -1409.2,
+        "jian": -18,
+        "chao": -279.7
+      }
+    },
+    {
+      "date": "2026-09-04",
+      "amounts": {
+        "lun": -3295.94,
+        "lei": -6580.43,
+        "jian": 175,
+        "chao": 288
+      }
+    }
+  ]
 }
