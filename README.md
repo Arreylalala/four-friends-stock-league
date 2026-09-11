@@ -1,83 +1,38 @@
-# 华尔街之狼股票战绩榜（GitHub Pages 版）
+# 华尔街之狼 · 股票战报
 
-这是一个完全静态的网站，不需要服务器、数据库或管理员账号。朋友打开网页即可查看；你每天只需在 GitHub 上修改一份数据文件。
+网站：https://arreylalala.github.io/four-friends-stock-league/
 
-## 每天更新战报
+## 每日更新
 
-1. 在仓库中打开根目录的 `scoreboard.json`。
-2. 点击右上角铅笔图标（Edit this file）。
-3. 在 `days` 数组中加入当天记录。
-4. 点击 **Commit changes** 保存。
-5. 等待约 1–3 分钟，网页会自动更新。
+只修改仓库根目录 `scoreboard.json`，提交到 `main` 后自动测试、构建、发布。金额单位为元，缺失金额用 `null`，当天四人金额齐全才结算。日期不可重复，收益率单位为百分数。
 
-金额单位是“元”。例如当天伦赚 1,820 元、镭亏 640 元：
+`public/scoreboard.json` 为构建时生成的文件，请勿手工编辑。不要再上传 `site.zip`；该旧包仅用于回退参考。
 
-```json
-{
-  "returnsEnabled": false,
-  "returnsStartDate": null,
-  "days": [
-    {
-      "date": "2026-08-31",
-      "amounts": {
-        "lun": 1820,
-        "lei": -640,
-        "jian": 960,
-        "chao": 310
-      }
-    }
-  ]
-}
-```
+## 本地开发
 
-四个人的固定代号：
+需要 Node.js 24 和 pnpm 11.19.0。
 
-- `lun`：伦
-- `lei`：镭
-- `jian`：健
-- `chao`：超
-
-## 启用收益率
-
-把 `returnsEnabled` 改为 `true`，并填写首次统计收益率的日期。收益率直接填写百分数，例如 `1.25` 表示 `1.25%`，`-0.8` 表示 `-0.8%`：
-
-```json
-{
-  "returnsEnabled": true,
-  "returnsStartDate": "2026-09-01",
-  "days": [
-    {
-      "date": "2026-09-01",
-      "amounts": {
-        "lun": 1000,
-        "lei": -200,
-        "jian": 600,
-        "chao": 300
-      },
-      "returns": {
-        "lun": 1.25,
-        "lei": -0.3,
-        "jian": 0.8,
-        "chao": 0.4
-      }
-    }
-  ]
-}
-```
-
-同一天不要重复添加。日期格式必须是 `年-月-日`，四个人的金额必须全部填写。
-
-## 本地运行
-
-需要 Node.js 22 和 pnpm：
-
-```bash
-pnpm install
+```sh
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-正式构建运行 `pnpm build`，静态网页会输出到 `out` 目录。
+每次启动开发服务会同步根目录数据；服务运行期间修改根数据后，运行 `node scripts/prepare-data.mjs` 并刷新页面。
 
-## 访问说明
+## 验证与发布
 
-GitHub Pages 不要求购买域名或备案。它在中国大陆通常可以访问，但网络质量受当地运营商影响，无法保证所有地区和所有时段都稳定。
+```sh
+git pull --ff-only
+pnpm check
+git add <本次修改的文件>
+git commit -m "Describe the change"
+git push origin main
+```
+
+`pnpm check` 执行测试、生产构建、静态资源路径和数据一致性检查。Pull request 和迁移分支只构建验证，只有 main 部署。失败时不会替换当前网站。生产资源必须使用 `/four-friends-stock-league/` 子路径。
+
+连胜徽章在两处均使用当前累计连胜，至少 2 场显示为 `2连胜`，不得改为历史最长连胜。
+
+## 回退
+
+通过 Git revert 撤销问题提交并推送，让流程重新发布。迁移前版本 `c095513` 使用旧的 ZIP 发布流程；只有同时恢复旧工作流和所需发布包才会重新启用该流程。不要恢复旧战报数据。

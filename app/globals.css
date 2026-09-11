@@ -1,0 +1,143 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@source '../app';
+@source '../components';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.65);
+  --radius-md: calc(var(--radius) * 0.82);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.35);
+  --radius-2xl: calc(var(--radius) * 1.75);
+  --radius-3xl: calc(var(--radius) * 2.1);
+}
+
+:root {
+  --background: oklch(0.976 0.008 88);
+  --foreground: oklch(0.205 0.018 65);
+  --card: oklch(0.998 0.003 85);
+  --card-foreground: oklch(0.205 0.018 65);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.018 65);
+  --primary: oklch(0.635 0.192 38);
+  --primary-foreground: oklch(0.985 0.004 80);
+  --secondary: oklch(0.94 0.018 84);
+  --secondary-foreground: oklch(0.31 0.025 65);
+  --muted: oklch(0.951 0.01 86);
+  --muted-foreground: oklch(0.515 0.025 65);
+  --accent: oklch(0.922 0.035 78);
+  --accent-foreground: oklch(0.32 0.045 53);
+  --destructive: oklch(0.59 0.225 26);
+  --border: oklch(0.892 0.018 82);
+  --input: oklch(0.892 0.018 82);
+  --ring: oklch(0.635 0.192 38);
+  --chart-1: #ef5b3d;
+  --chart-2: #2f80ed;
+  --chart-3: #8b5cf6;
+  --chart-4: #139b73;
+  --chart-5: #d99b24;
+  --radius: 0.85rem;
+  --sidebar: oklch(0.985 0.006 84);
+  --sidebar-foreground: oklch(0.205 0.018 65);
+  --sidebar-primary: oklch(0.635 0.192 38);
+  --sidebar-primary-foreground: oklch(0.985 0.004 80);
+  --sidebar-accent: oklch(0.94 0.018 84);
+  --sidebar-accent-foreground: oklch(0.31 0.025 65);
+  --sidebar-border: oklch(0.892 0.018 82);
+  --sidebar-ring: oklch(0.635 0.192 38);
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-heading:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    background: var(--background);
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 24%, transparent);
+  }
+}
+
+@layer utilities {
+  .page-shell {
+    width: min(1180px, calc(100% - 32px));
+    margin-inline: auto;
+  }
+
+  .paper-grid {
+    background-image: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--foreground) 8%, transparent) 0.8px,
+      transparent 0.8px
+    );
+    background-size: 20px 20px;
+  }
+
+  .metric-number {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.035em;
+  }
+
+  .profit {
+    color: #d94b3d;
+  }
+
+  .loss {
+    color: #158563;
+  }
+}
