@@ -989,6 +989,7 @@ function StreakBadge({
   className?: string;
 }) {
   if (streak < 2) return null;
+  const isHot = streak >= 5;
 
   return (
     <span
@@ -997,15 +998,41 @@ function StreakBadge({
         tone === 'dark'
           ? 'h-10 gap-2 border border-[#c99d49]/75 bg-[#3a342a]/75 px-4 text-sm text-[#f8dfa2] shadow-[0_8px_22px_rgb(0_0_0/18%)] backdrop-blur-sm'
           : 'h-6 gap-1 border border-[#e9c775]/70 bg-[#fff3cf] px-2 text-[11px] text-[#9b680d]',
+        isHot &&
+          (tone === 'dark'
+            ? 'border-[#dc8a40] bg-[#463024] text-[#ffe2a1]'
+            : 'h-7 border-[#efb564] bg-[#fff0d3] text-[#99510c]'),
         className,
       )}
       aria-label={`${streak}连胜`}
       title="当前连胜"
     >
-      <Flame
-        className={tone === 'dark' ? 'size-4' : 'size-3'}
-        fill="currentColor"
-      />
+      {isHot ? (
+        <span
+          className={cn(
+            'streak-fire',
+            tone === 'light' && 'streak-fire--compact',
+          )}
+          aria-hidden="true"
+        >
+          <Flame
+            className="streak-fire__outer"
+            fill="currentColor"
+            strokeWidth={1.1}
+          />
+          <Flame
+            className="streak-fire__inner"
+            fill="currentColor"
+            strokeWidth={1.1}
+          />
+        </span>
+      ) : (
+        <Flame
+          className={tone === 'dark' ? 'size-4' : 'size-3'}
+          fill="currentColor"
+          aria-hidden="true"
+        />
+      )}
       {streak}连胜
     </span>
   );

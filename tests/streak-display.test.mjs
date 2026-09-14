@@ -65,3 +65,20 @@ test('最新胜者与累计榜首不同时，榜首不保留旧连胜徽章', ()
   const html = render(buildPublicScoreboard({...source, days: source.days.slice(0, -1)}));
   assert.doesNotMatch(html, /aria-label="\d+连胜"/);
 });
+
+test('当前 2–4 连胜保持小火苗，5 连胜及以上在两处升级为大火苗', () => {
+  for (const streak of [2, 3, 4, 5, 8]) {
+    const days = Array.from({length: streak}, (_, i) => day(`2026-09-${String(i + 1).padStart(2, '0')}`, 'jian'));
+    const html = render(buildPublicScoreboard({...source, days}));
+    assert.equal((html.match(new RegExp(`aria-label="${streak}连胜"`, 'g')) ?? []).length, 2);
+    assert.equal((html.match(/class="streak-fire(?: streak-fire--compact)?"/g) ?? []).length, streak >= 5 ? 2 : 0);
+  }
+});
+
+test('五连胜中断后不会保留大火苗或历史连胜徽章', () => {
+  const days = Array.from({length: 5}, (_, i) => day(`2026-09-0${i + 1}`, 'jian'));
+  for (const suffix of [[day('2026-09-06', 'chao')], [day('2026-09-06', 'chao'), day('2026-09-07', 'jian')]]) {
+    const html = render(buildPublicScoreboard({...source, days: [...days, ...suffix]}));
+    assert.doesNotMatch(html, /streak-fire|aria-label="\d+连胜"/);
+  }
+});
