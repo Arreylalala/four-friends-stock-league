@@ -17,7 +17,7 @@ import type {
 export type EditableDay = {
   date: string;
   note?: string | null;
-  amounts: Partial<Record<MemberId, number | null>>;
+  amounts: Record<MemberId, { stock: number | null; fund: number | null }>;
   returns?: Partial<Record<MemberId, number | null>>;
 };
 
@@ -179,7 +179,7 @@ function normalizeDays(source: EditableScoreboard): DailyScore[] {
       seenDates.add(day.date);
       const amountValues = MEMBER_IDS.map((id) => ({
         id,
-        value: optionalNumber(day.amounts?.[id], `${day.date} 的 ${id} 金额`),
+        value: totalAmountFen(day.amounts?.[id], `${day.date} 的 ${id}`),
       }));
       const settled = amountValues.every(
         ({ value }) => typeof value === 'number',
@@ -216,13 +216,12 @@ function normalizeDays(source: EditableScoreboard): DailyScore[] {
         amountDraw,
         returnDraw,
         results: MEMBERS.map((member) => {
-          const amount = day.amounts?.[member.id];
+          const amount = amountValues.find(({ id }) => id === member.id)!.value;
           return {
             memberId: member.id,
             nickname: member.nickname,
             color: member.color,
-            amountFen:
-              typeof amount === 'number' ? Math.round(amount * 100) : null,
+            amountFen: amount,
             returnPpm: returnEligible
               ? Math.round((day.returns?.[member.id] as number) * 10_000)
               : null,
@@ -235,12 +234,19 @@ function normalizeDays(source: EditableScoreboard): DailyScore[] {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-function optionalNumber(value: unknown, label: string): number | null {
-  if (value === null || value === undefined) return null;
-  if (typeof value !== 'number' || !Number.isFinite(value)) {
-    throw new Error(`${label} 必须是数字或 null`);
+function totalAmountFen(value: unknown, label: string): number | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`${label} 必须填写股票和基金两项`);
   }
-  return value;
+  const entry = value as Record<string, unknown>;
+  for (const key of ['stock', 'fund']) {
+    const amount = entry[key];
+    if (amount !== null && (typeof amount !== 'number' || !Number.isFinite(amount))) {
+      throw new Error(`${label} 的 ${key} 必须是数字或 null`);
+    }
+  }
+  if (entry.stock === null || entry.fund === null) return null;
+  return Math.round((entry.stock as number) * 100) + Math.round((entry.fund as number) * 100);
 }
 
 function withRanks(

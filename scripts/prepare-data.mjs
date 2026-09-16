@@ -10,11 +10,15 @@ for (const day of source.days) {
   if (!validDate(day.date) || dates.has(day.date)) throw new Error(`Invalid or duplicate date: ${day.date}`);
   dates.add(day.date);
   if (!day.amounts || typeof day.amounts !== 'object' || Array.isArray(day.amounts)) throw new Error(`Missing amounts: ${day.date}`);
-  for (const metric of ['amounts', 'returns']) {
-    for (const id of ['lun', 'lei', 'jian', 'chao']) {
-      const value = day[metric]?.[id];
-      if (value != null && (typeof value !== 'number' || !Number.isFinite(value))) throw new Error(`Invalid ${metric}: ${day.date}/${id}`);
+  for (const id of ['lun', 'lei', 'jian', 'chao']) {
+    const entry = day.amounts[id];
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) throw new Error(`Missing stock/fund: ${day.date}/${id}`);
+    for (const key of ['stock', 'fund']) {
+      const value = entry[key];
+      if (value !== null && (typeof value !== 'number' || !Number.isFinite(value))) throw new Error(`Invalid ${key}: ${day.date}/${id}`);
     }
+    const value = day.returns?.[id];
+    if (value != null && (typeof value !== 'number' || !Number.isFinite(value))) throw new Error(`Invalid returns: ${day.date}/${id}`);
   }
 }
 mkdirSync(new URL('../public/', import.meta.url), {recursive:true});

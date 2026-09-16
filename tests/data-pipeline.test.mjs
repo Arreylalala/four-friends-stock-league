@@ -15,7 +15,7 @@ function prepare(source) {
     return {status: result.status, data: result.status === 0 ? JSON.parse(readFileSync(join(root,'public/scoreboard.json'))) : null};
   } finally { rmSync(root, {recursive:true, force:true}); }
 }
-const source = {returnsEnabled:false, returnsStartDate:null, days:[{date:'2026-09-11',amounts:{lun:10,lei:-1,jian:null}}]};
+const source = {returnsEnabled:false, returnsStartDate:null, days:[{date:'2026-09-11',amounts:{lun:{stock:10,fund:2},lei:{stock:-1,fund:0},jian:{stock:null,fund:0},chao:{stock:0,fund:null}}}]};
 test('数据流水线保留待结算值并从唯一数据源生成公开文件', () => {
   assert.deepEqual(prepare(source), {status:0, data:source});
 });
@@ -30,4 +30,10 @@ test('数据流水线拒绝用文字填写盈亏金额', () => {
 });
 test('启用收益率时必须提供有效开始日期', () => {
   assert.notEqual(prepare({...source,returnsEnabled:true}).status,0);
+});
+
+test('数据流水线拒绝旧数字、缺项和无效分项', () => {
+  for (const entry of [10, null, {stock: 1}, {stock: '1', fund: 0}, {stock: 0, fund: '待结算'}]) {
+    assert.notEqual(prepare({...source, days:[{...source.days[0], amounts:{...source.days[0].amounts, lun:entry}}]}).status, 0);
+  }
 });

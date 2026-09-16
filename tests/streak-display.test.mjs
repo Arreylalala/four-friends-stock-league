@@ -38,7 +38,7 @@ registerHooks({
 });
 const { buildPublicScoreboard } = await import('../lib/static-scoreboard.ts');
 const { PublicScoreboard } = await import('../components/public-scoreboard.tsx');
-const day = (date, winner) => ({ date, amounts: { lun: 0, lei: 0, jian: 0, chao: 0, [winner]: 100 } });
+const day = (date, winner) => ({ date, amounts: Object.fromEntries(['lun', 'lei', 'jian', 'chao'].map(id => [id, {stock: id === winner ? 100 : 0, fund: 0}])) });
 const source = {
   returnsEnabled: false, returnsStartDate: null,
   days: [day('2026-09-01', 'jian'), day('2026-09-02', 'jian'), day('2026-09-03', 'jian'), day('2026-09-09', 'chao'), day('2026-09-10', 'jian')],
@@ -80,5 +80,33 @@ test('五连胜中断后不会保留大火苗或历史连胜徽章', () => {
   for (const suffix of [[day('2026-09-06', 'chao')], [day('2026-09-06', 'chao'), day('2026-09-07', 'jian')]]) {
     const html = render(buildPublicScoreboard({...source, days: [...days, ...suffix]}));
     assert.doesNotMatch(html, /streak-fire|aria-label="\d+连胜"/);
+  }
+});
+
+test('股票基金以分为单位合计，排名、趋势与胜者使用合计', () => {
+  const entry = {date:'2026-09-16', amounts:{lun:{stock:100,fund:-30},lei:{stock:60,fund:20},jian:{stock:0.1,fund:0.2},chao:{stock:-10,fund:0}}};
+  const data = buildPublicScoreboard({...source, days:[entry]});
+  assert.deepEqual(data.latest.results.map(r => r.amountFen), [7000,8000,30,-1000]);
+  assert.deepEqual(data.latest.amountWinnerIds, ['lei']);
+  assert.equal(data.amountRanking[0].id, 'lei');
+  assert.equal(data.amountRanking[0].totalAmountFen, 8000);
+  assert.equal(data.trend[0].amounts.lun, 7000);
+  assert.equal(data.currentAmountStreaks.lei, 1);
+  assert.doesNotMatch(render(data), /stock|fund/);
+});
+
+test('任一分项为 null 时该人待结算，全日不计入排名、趋势或连胜', () => {
+  for (const key of ['stock', 'fund']) {
+    const pending = day('2026-09-16', 'lun');
+    pending.amounts.lun[key] = null;
+    const data = buildPublicScoreboard({...source, days:[day('2026-09-15', 'jian'), pending]});
+    assert.equal(data.latest.settled, false);
+    assert.equal(data.latest.results[0].amountFen, null);
+    assert.deepEqual(data.latest.amountWinnerIds, []);
+    assert.equal(data.publishedDays, 1);
+    assert.equal(data.trend.length, 1);
+    assert.equal(data.currentAmountStreaks.jian, 1);
+    assert.equal(data.amountRanking.find(r => r.id === 'lun').totalAmountFen, 0);
+    assert.match(render(data), /待结算/);
   }
 });
