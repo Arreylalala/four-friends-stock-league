@@ -274,6 +274,27 @@
           "fund": 10.14
         }
       }
+    },
+    {
+      "date": "2026-09-18",
+      "amounts": {
+        "lun": {
+          "stock": 6011,
+          "fund": 0
+        },
+        "lei": {
+          "stock": 9637.85,
+          "fund": 0
+        },
+        "jian": {
+          "stock": 0,
+          "fund": 0
+        },
+        "chao": {
+          "stock": 387.4,
+          "fund": 0
+        }
+      }
     }
   ]
 }
