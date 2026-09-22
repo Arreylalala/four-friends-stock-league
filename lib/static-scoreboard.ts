@@ -25,6 +25,10 @@ export type EditableScoreboard = {
   returnsEnabled: boolean;
   returnsStartDate: string | null;
   days: EditableDay[];
+  cumulativeAdjustments?: {
+    date: string;
+    amounts: Partial<Record<MemberId, number>>;
+  }[];
 };
 
 const MEMBERS: Member[] = [
@@ -143,6 +147,36 @@ export function buildPublicScoreboard(
   );
 
   return {
+    cumulative: MEMBERS.map((member) => {
+      const baseline = [...(source.cumulativeAdjustments ?? [])]
+        .filter((entry) => typeof entry.amounts[member.id] === 'number')
+        .sort((a, b) => b.date.localeCompare(a.date))[0];
+      if (!baseline)
+        return {
+          memberId: member.id,
+          amountFen: null,
+          baselineDate: null,
+          throughDate: null,
+          pendingDays: 0,
+        };
+      const later = allDays.filter((day) => day.date > baseline.date);
+      const settled = later.filter((day) => day.settled);
+      return {
+        memberId: member.id,
+        amountFen:
+          Math.round(baseline.amounts[member.id]! * 100) +
+          settled.reduce(
+            (sum, day) =>
+              sum +
+              (day.results.find((result) => result.memberId === member.id)!
+                .amountFen as number),
+            0,
+          ),
+        baselineDate: baseline.date,
+        throughDate: settled.at(-1)?.date ?? baseline.date,
+        pendingDays: later.filter((day) => !day.settled).length,
+      };
+    }),
     selectedPeriod,
     selectedAnchor,
     rangeStart: range.start,
@@ -167,7 +201,8 @@ export function buildPublicScoreboard(
 function normalizeDays(source: EditableScoreboard): DailyScore[] {
   if (!Array.isArray(source.days)) throw new Error('days 必须是数组');
   const seenDates = new Set<string>();
-  return source.days
+  return [...source.days]
+    .sort((a, b) => a.date.localeCompare(b.date))
     .map((day, index) => {
       if (
         !DATE_PATTERN.test(day.date) ||
@@ -241,12 +276,18 @@ function totalAmountFen(value: unknown, label: string): number | null {
   const entry = value as Record<string, unknown>;
   for (const key of ['stock', 'fund']) {
     const amount = entry[key];
-    if (amount !== null && (typeof amount !== 'number' || !Number.isFinite(amount))) {
+    if (
+      amount !== null &&
+      (typeof amount !== 'number' || !Number.isFinite(amount))
+    ) {
       throw new Error(`${label} 的 ${key} 必须是数字或 null`);
     }
   }
   if (entry.stock === null || entry.fund === null) return null;
-  return Math.round((entry.stock as number) * 100) + Math.round((entry.fund as number) * 100);
+  return (
+    Math.round((entry.stock as number) * 100) +
+    Math.round((entry.fund as number) * 100)
+  );
 }
 
 function withRanks(

@@ -47,6 +47,13 @@ export type TrendPoint = {
 };
 
 export type PublicScoreboardData = {
+  cumulative: {
+    memberId: MemberId;
+    amountFen: number | null;
+    baselineDate: string | null;
+    throughDate: string | null;
+    pendingDays: number;
+  }[];
   selectedPeriod: PeriodKind;
   selectedAnchor: string;
   rangeStart: string | null;

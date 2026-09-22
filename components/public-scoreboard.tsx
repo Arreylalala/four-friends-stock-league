@@ -452,6 +452,62 @@ export function PublicScoreboard({
           </Card>
         </section>
 
+        <section className="mt-5" aria-label="累计盈亏">
+          <Card>
+            <CardContent className="p-5 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="text-xl font-bold">累计盈亏</h2>
+                <span className="text-xs text-muted-foreground">
+                  股票＋基金 · 不随统计周期切换
+                </span>
+              </div>
+              <div className="mt-5 grid grid-cols-1 gap-x-4 gap-y-6 min-[360px]:grid-cols-2 sm:grid-cols-4">
+                {data.members.map((member) => {
+                  const total = data.cumulative.find(
+                    (item) => item.memberId === member.id,
+                  )!;
+                  return (
+                    <div key={member.id} className="min-w-0">
+                      <p className="font-semibold">{member.nickname}</p>
+                      <p
+                        className={cn(
+                          'mt-2 break-words text-base font-bold tabular-nums sm:text-xl',
+                          total.amountFen === null
+                            ? 'text-muted-foreground'
+                            : total.amountFen > 0
+                              ? 'profit'
+                              : total.amountFen < 0
+                                ? 'loss'
+                                : 'text-foreground',
+                        )}
+                      >
+                        {total.amountFen === null
+                          ? '待录入'
+                          : moneyFen(total.amountFen)}
+                      </p>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        {total.throughDate
+                          ? `截至 ${total.throughDate}`
+                          : '尚未设置累计起点'}
+                      </p>
+                      {total.baselineDate && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          校准于 {total.baselineDate}
+                        </p>
+                      )}
+                      {total.pendingDays > 0 && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {total.pendingDays} 天待结算，暂未计入
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
         <section className="mt-5">
           <div className="grid w-full grid-cols-[32px_1fr_32px] items-center gap-1 rounded-xl border border-foreground/10 bg-card p-1 shadow-sm">
             {data.selectedPeriod === 'all' ? (

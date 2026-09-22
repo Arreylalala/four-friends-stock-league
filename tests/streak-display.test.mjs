@@ -110,3 +110,38 @@ test('任一分项为 null 时该人待结算，全日不计入排名、趋势�
     assert.match(render(data), /待结算/);
   }
 });
+
+
+test('累计盈亏独立校准、跨月累加、周期切换不变且不重复计入当天', () => {
+  const days = [day('2026-09-30','lun'),day('2026-10-01','lun'),day('2026-10-02','lei')];
+  const cumulativeAdjustments = [{date:'2026-10-01',amounts:{lun:-20.10}},{date:'2026-09-30',amounts:{lun:-100,lei:0}}];
+  for (const period of ['week','month','year','all']) {
+    const data = buildPublicScoreboard({...source,days,cumulativeAdjustments},period,'2026-09-01');
+    assert.deepEqual(data.cumulative.map(item=>item.amountFen),[-2010,10000,null,null]);
+    assert.match(render(data), /累计盈亏/);
+    assert.match(render(data), /待录入/);
+  }
+});
+test('校准之前更正不影响累计，之后更正会重算，待结算不计入', () => {
+  const before = day('2026-09-30','lun'), after = day('2026-10-01','lun'), pending = day('2026-10-02','lei');
+  pending.amounts.chao.fund = null;
+  const cumulativeAdjustments = [{date:'2026-09-30',amounts:{lun:0}}];
+  const calc = () => buildPublicScoreboard({...source,days:[pending,before,after],cumulativeAdjustments}).cumulative[0];
+  assert.equal(calc().amountFen,10000);
+  before.amounts.lun.stock=900;
+  assert.equal(calc().amountFen,10000);
+  after.amounts.lun.stock=0.1;after.amounts.lun.fund=0.2;
+  assert.equal(calc().amountFen,30);
+  assert.equal(calc().pendingDays,1);
+  assert.equal(calc().throughDate,'2026-10-01');
+});
+test('月度拆分汇总后原有全周期统计与跨月连胜不变', () => {
+  const days=[day('2026-09-30','lun'),day('2026-10-01','lun')];
+  for (const period of ['week','month','year','all']) {
+    const a=buildPublicScoreboard({...source,days},period,'2026-10-01');
+    const b=buildPublicScoreboard({...source,days:[...days].reverse(),cumulativeAdjustments:[{date:'2026-10-01',amounts:{lun:-500}}]},period,'2026-10-01');
+    const {cumulative:ac,...restA}=a;const {cumulative:bc,...restB}=b;
+    assert.deepEqual(restA,restB);
+    assert.equal(b.currentAmountStreaks.lun,2);
+  }
+});

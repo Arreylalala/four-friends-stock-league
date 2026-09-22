@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
+import { loadData } from './load-data.mjs';
 const out = new URL('../out/', import.meta.url);
 const html = readFileSync(new URL('index.html', out), 'utf8');
 const assets = [...html.matchAll(/(?:src|href)="([^"]*_next\/[^"]+)"/g)].map(match => match[1]);
@@ -9,5 +10,5 @@ for (const asset of assets) {
   assert(asset.startsWith(prefix), `Incorrect Pages asset path: ${asset}`);
   assert(existsSync(new URL(asset.slice(prefix.length), out)), `Missing asset: ${asset}`);
 }
-assert.deepEqual(JSON.parse(readFileSync(new URL('scoreboard.json', out))), JSON.parse(readFileSync(new URL('../scoreboard.json', import.meta.url))));
+assert.deepEqual(JSON.parse(readFileSync(new URL('scoreboard.json', out))), loadData());
 console.log('Static asset paths and exported data verified');
