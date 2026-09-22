@@ -453,7 +453,7 @@ export function PublicScoreboard({
         </section>
 
         <section className="mt-5" aria-label="累计盈亏">
-          <Card>
+          <Card className="border-0 bg-[#eee6d5] ring-0 shadow-[0_14px_40px_rgb(70_52_28/9%)]">
             <CardContent className="p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-xl font-bold">累计盈亏</h2>
@@ -468,7 +468,16 @@ export function PublicScoreboard({
                   )!;
                   return (
                     <div key={member.id} className="min-w-0">
-                      <p className="font-semibold">{member.nickname}</p>
+                      <div className="flex items-center gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                          style={{ backgroundColor: member.color }}
+                        >
+                          {member.nickname}
+                        </span>
+                        <span className="font-semibold">{member.nickname}</span>
+                      </div>
                       <p
                         className={cn(
                           'mt-2 break-words text-base font-bold tabular-nums sm:text-xl',
