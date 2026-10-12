@@ -4,8 +4,8 @@
     "amounts": {
       "lun": { "stock": 759.1, "fund": 0 },
       "lei": { "stock": -5403.42, "fund": 0 },
-      "jian": { "stock": 0, "fund": 0 },
-      "chao": { "stock": 318.4, "fund": 0 }
+      "jian": { "stock": 0, "fund": 76.7 },
+      "chao": { "stock": 318.4, "fund": 39.27 }
     }
   },
   {
@@ -13,7 +13,7 @@
     "amounts": {
       "lun": { "stock": -5540.42, "fund": 0 },
       "lei": { "stock": -15671.84, "fund": 0 },
-      "jian": { "stock": 49.5, "fund": 0 },
+      "jian": { "stock": 0, "fund": 49.5 },
       "chao": { "stock": -302.3, "fund": -236.97 }
     }
   }
