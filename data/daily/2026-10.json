@@ -4,7 +4,7 @@
     "amounts": {
       "lun": { "stock": -9372, "fund": 0 },
       "lei": { "stock": -10993.7, "fund": 0 },
-      "jian": { "stock": 0, "fund": +178.1 },
+      "jian": { "stock": 0, "fund": 178.1 },
       "chao": { "stock": -536.7, "fund": -107.35 }
     }
   },
