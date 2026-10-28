@@ -1,5 +1,14 @@
 [ 
   {
+    "date": "2026-10-28",
+    "amounts": {
+      "lun": { "stock": 8645, "fund": 0 },
+      "lei": { "stock": 24961.2, "fund": 0 },
+      "jian": { "stock": 0, "fund": 0 },
+      "chao": { "stock": 356.8, "fund": 0 }
+    }
+  },
+  {
     "date": "2026-10-27",
     "amounts": {
       "lun": { "stock": -9372, "fund": 0 },
