@@ -1,5 +1,23 @@
 [ 
   {
+    "date": "2026-11-17",
+    "amounts": {
+      "lun": { "stock": -7723.13, "fund": 0 },
+      "lei": { "stock": -8367.2, "fund": 0 },
+      "jian": { "stock": 0, "fund": 0 },
+      "chao": { "stock": 185.8 , "fund": 0 }
+    }
+  },
+  {
+    "date": "2026-11-16",
+    "amounts": {
+      "lun": { "stock": -22067, "fund": 0 },
+      "lei": { "stock": -28375, "fund": 0 },
+      "jian": { "stock": 0, "fund": -368.7 },
+      "chao": { "stock": -668, "fund": -655.06 }
+    }
+  },
+  {
     "date": "2026-11-13",
     "amounts": {
       "lun": { "stock": -13371, "fund": 0 },
