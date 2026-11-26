@@ -1,11 +1,20 @@
 [ 
   {
+    "date": "2026-11-26",
+    "amounts": {
+      "lun": { "stock": 7730, "fund": 0 },
+      "lei": { "stock": 2912.2, "fund": 0 },
+      "jian": { "stock": 0, "fund": 0 },
+      "chao": { "stock": -3.5, "fund": 0 }
+    }
+  },  
+  {
     "date": "2026-11-25",
     "amounts": {
       "lun": { "stock": 1290, "fund": 0 },
       "lei": { "stock": -15365.4, "fund": 0 },
-      "jian": { "stock": 0, "fund": 0 },
-      "chao": { "stock": -1402 , "fund": 0 }
+      "jian": { "stock": 0, "fund": -423.9 },
+      "chao": { "stock": -1402 , "fund": -345.89 }
     }
   },  
   {
@@ -22,8 +31,8 @@
     "amounts": {
       "lun": { "stock": 16360, "fund": 0 },
       "lei": { "stock": 11879.9, "fund": 0 },
-      "jian": { "stock": 0, "fund": 0 },
-      "chao": { "stock": 327.3 , "fund": 0 }
+      "jian": { "stock": 0, "fund": -1217.8 },
+      "chao": { "stock": 327.3 , "fund": -599.06 }
     }
   },    
   {
